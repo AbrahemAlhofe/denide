@@ -1,0 +1,26 @@
+{
+  "name": "denide",
+  "version": "1.0.0",
+  "description": "Denide is server side framework for vue js to load pages page by page when user need it",
+  "main": "index.js",
+  "repository": "https://github.com/AbrahemAlhofe/denide.git",
+  "author": "abrahem ali alhofe <alhofeabrahem88@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "keywords": [
+    "ssr",
+    "server side render",
+    "vue",
+    "framework",
+    "code splitting"
+  ],
+  "preferGlobal": true,
+  "bin": {
+    "denide": "./bin/cli.js"
+  },
+  "dependencies": {
+    "commander": "^5.0.0",
+    "consola": "^2.11.3",
+    "mustache": "^4.0.1"
+  }
+}
