@@ -6,7 +6,7 @@ function entries (mode) {
   const root = ( mode === 'entry' ) ? './pages/**/' : `./dist/${mode}/`
 
   const entries = {
-    app : root + ( mode === 'entry' ) ? './App.js' : root + 'app.js',
+    app : root + ( mode === 'entry' ) ? './.denide/App.js' : root + 'app.js',
   }
 
   for ( let filePath of glob.sync(root + '*.js') ) {

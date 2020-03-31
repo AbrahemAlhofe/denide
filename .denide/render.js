@@ -1,19 +1,19 @@
 const path = require('path');
-const { renderPage } = require('../utils');
-const json2html = require('../json2html');
+const { renderPage } = require('./utils');
+const json2html = require('./json2html');
 const { JSDOM } = require('jsdom')
 const { mergeAndConcat } = require('merge-anything')
 
 const express = require('express');
 const app = express.Router();
 
-const rootPath = path.resolve(__dirname, '../../')
+const rootPath = path.resolve(process.cwd())
 
 module.exports = function (config) {
   app.use('/src', express.static( path.join(rootPath, '/dist') ))
 
   app.get('/page/:page', (req, res) => {
-    const routes = require('../entries')('back')
+    const routes = require('./entries')('back')
     const page = require( path.resolve(rootPath, routes[req.params.page]) )
 
     const data = {

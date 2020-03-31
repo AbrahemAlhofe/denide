@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const config = require('../denide.config');
-const Denide = require('../.denide/init/denide');
+const Denide = require('denide');
 
 const denide = new Denide(config)
 denide.isProd = process.env.NODE_ENV === 'production'

@@ -1,8 +1,7 @@
-<template>
-  <div id='index'>
-    <h1>Hello 🎉 … World 🌎</h1>
-    <span>Denide,  Make your own big Story</span>
-  </div>
+<template lang='pug'>
+  div#index
+    h1 Hello 🎉 … World 🌎
+    span Denide,  Make your own big Story
 </template>
 <script>
 export default {

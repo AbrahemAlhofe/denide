@@ -1,8 +1,8 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
-import layout from './layouts/default.vue';
-import { createRouter } from './.denide/router';
-import store from './store/index';
+import layout from '../layouts/default.vue';
+import { createRouter } from './router';
+import store from '../store/index';
 
 Vue.use(Vuex);
 
@@ -10,6 +10,11 @@ global.Vue = Vue;
 
 export default function createApp(page) {
   const router = createRouter(page);
+
+  // register ssr plugins
+  {{#plugins.ssr}}
+  require('{{{ path }}}')
+  {{/plugins.ssr}}
 
   const app = new Vue({
     render: (h) => h(layout),
@@ -22,9 +27,13 @@ export default function createApp(page) {
 
 (function client() {
   if (typeof window === 'undefined') return;
-  require('./plugins/client');
   const { app, router } = createApp();
-  // register client only plugins
+ 
+  // register client plugins
+  {{#plugins.client}} 
+  require('{{{ path }}}')
+  {{/plugins.client}}
+
 
   router.beforeEach((to, from, next) => {
     const getPage = to.matched[0].components.default;

@@ -1,40 +1,21 @@
-const path = require('path');
-const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
-const fs = require('fs');
 const entries = require('./.denide/entries')('entry')
 
 // Plugins
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const { VueLoaderPlugin } = require('vue-loader')
 
-const isProduction = true
+const isProduction = false
 
 const options = {
+  mode : isProduction ? 'development' : 'production',
   entry : entries,
   module : {
     rules : [
-      {
-       enforce : 'pre',
-       test: /\.js$/,
-       exclude: /node_modules/,
-       loader: 'eslint-loader',
-       options : {
-         fix : true
-       }
-     },
      {
-       test: /\.js$/,
-       exclude: /(node_modules|bower_components)/,
-       use : {
-         loader : 'babel-loader',
-         options: {
-           presets: ['@babel/preset-env'],
-           plugins: ["@babel/plugin-transform-regenerator"]
-         }
-       }
+        test: /\.pug$/,
+        loader: 'pug-plain-loader'
      },
      {
         test: /\.scss$/,
@@ -47,7 +28,6 @@ const options = {
       {
         test: /\.vue/i,
         loader: 'vue-loader',
-        include : [ path.resolve(__dirname) ],
         options: {
           extractCSS : isProduction
         }
@@ -65,7 +45,7 @@ const options = {
   resolve: {
     extensions: [ '.js', '.vue' ],
     alias: {
-      '@': path.resolve(__dirname)
+      '@': process.cwd()
     }
   },
   plugins : [

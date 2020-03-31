@@ -1,7 +1,6 @@
-<template>
-  <div id='error'>
-    <h1>Oops ! ... page is not found 😥</h1>
-  </div>
+<template lang='pug'>
+  div#error
+    h1 Oops ! ... page is not found 😥
 </template>
 <script>
 export default {

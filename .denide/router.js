@@ -1,7 +1,8 @@
-import { routes } from '../denide.config.js'
 import Router from 'vue-router'
 import Vue from 'vue'
 import json2html from './json2html.js'
+
+const routes = JSON.parse('{{{ routes }}}')
 
 Vue.use(Router)
 
@@ -46,7 +47,7 @@ const view = (to, page) => resolve => {
 
 export function createRouter (page) {
   const Routes = []
-
+  
   for ( let path in routes ) {
     const route = routes[path]
     Routes.push({ path, name : route, component : view(path, page) })
