@@ -13,7 +13,7 @@ export default function createApp(page) {
 
   // register ssr plugins
   {{#plugins.ssr}}
-  require('{{{ path }}}')
+  require('{{{ src }}}')
   {{/plugins.ssr}}
 
   const app = new Vue({
@@ -31,7 +31,7 @@ export default function createApp(page) {
  
   // register client plugins
   {{#plugins.client}} 
-  require('{{{ path }}}')
+  require('{{{ src }}}')
   {{/plugins.client}}
 
 

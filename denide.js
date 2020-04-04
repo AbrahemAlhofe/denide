@@ -30,11 +30,11 @@ class Denide {
 
     this.config.plugins = this.config.plugins.map( plugin => {
       if ( typeof plugin === 'string' ) {
-        plugin = { path : plugin, mode : 'ssr' }
+        plugin = { src : plugin, mode : 'ssr' }
       }
 
       if ( typeof plugin === 'object' ) {
-        plugin = Object.assign({ path : '', mode : 'ssr' }, plugin)
+        plugin = Object.assign({ src : plugin.src, mode : 'ssr' }, plugin)
       }
       return plugin
     })

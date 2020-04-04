@@ -40,6 +40,11 @@ function createApp (context) {
 
    const { app, router } = require( path.resolve( process.cwd(), './dist/back/app.js') ).default(page)
 
+  router.beforeEach((v, next) => {
+    console.log(v)
+    next()
+  })
+
    // set server-side router's location
    router.push(context.url)
 

@@ -1,5 +1,6 @@
 const nodeExternals = require('webpack-node-externals');
 const entries = require('./.denide/entries')('entry')
+const path = require('path')
 
 // Plugins
 const CopyPlugin = require('copy-webpack-plugin');
@@ -22,7 +23,11 @@ const options = {
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
-          'sass-loader'
+          { loader : 'sass-loader',
+            options : {
+              prependData : `@import "@/assets/scss/colors.scss"; `
+            }
+          }
         ]
       },
       {
@@ -39,6 +44,17 @@ const options = {
       {
        test: /\.css$/i,
        use: [ !isProduction ? 'vue-style-loader' : MiniCssExtractPlugin.loader, 'css-loader' ]
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192,
+            },
+          },
+        ],
       }
     ]
   },
