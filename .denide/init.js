@@ -1,19 +1,19 @@
 module.exports = (page) => {
-  if ( !page.asyncData ) { page.asyncData = () => Promise.resolve({}) }
+  // if ( !page.asyncData ) { page.asyncData = () => Promise.resolve({}) }
 
-  page.beforeRouteEnter = function beforeRouteEnter (to, from, next) {
-    page.asyncData(Vue).then(data => {
-      next(vm => {
-        for ( let key in data ) {
-          vm[key] = data[key]
-        }
-      })
-    })
-  }
+  // page.beforeRouteEnter = function beforeRouteEnter (to, from, next) {
+  //   page.asyncData(Vue).then(data => {
+  //     next(vm => {
+  //       for ( let key in data ) {
+  //         vm[key] = data[key]
+  //       }
+  //     })
+  //   })
+  // }
 
-  page.serverPrefetch = function serverPrefetch () {
-    page.asyncData(this)
-  }
+  // page.serverPrefetch = function serverPrefetch () {
+  //   page.asyncData(this)
+  // }
 
   // if we are not in browser enviroment cancel everything
   if ( typeof window !== 'object' ) return page

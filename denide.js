@@ -1,25 +1,11 @@
 const { mergeAndConcat } = require('merge-anything')
-const fs = require('fs')
-const path = require('path')
-const webpack = require('webpack');
-const { createDirectoryContents } = require('./.denide/utils')
-var isFirstTime = true
-
-function createDenideFolder(options) {
-  if ( !fs.existsSync(path.resolve(process.cwd(), './.denide')) ) {
-    fs.mkdirSync( path.resolve( process.cwd(), './.denide' ) )
-  }
-
-  createDirectoryContents( path.resolve(__dirname, './.denide'), path.resolve(process.cwd(), './.denide'), options)
-}
+const { createDenideFolder, getCompilers, classifyPlugins } = require('./utils')
 
 class Denide {
   constructor (config) {
-    this.isProd = true
-
     // merge config with default options
     this.config = mergeAndConcat({
-      mode : this.isProd ? 'production' : 'development',
+      isProd : true,
       link : [],
       routes : {},
       script : [],
@@ -28,55 +14,26 @@ class Denide {
 
     this.render = require('./.denide/render')( this.config )
 
-    this.config.plugins = this.config.plugins.map( plugin => {
-      if ( typeof plugin === 'string' ) {
-        plugin = { src : plugin, mode : 'ssr' }
-      }
+    // classify plugins
+    this.config.plugins = classifyPlugins( this.config.plugins )
 
-      if ( typeof plugin === 'object' ) {
-        plugin = Object.assign({ src : plugin.src, mode : 'ssr' }, plugin)
-      }
-      return plugin
-    })
-
-    const options = {
+    createDenideFolder({
       'router.js' : {
         routes : JSON.stringify(this.config.routes)
       },
       'App.js' : {
-        plugins : {
-          client : this.config.plugins.filter( plugin => plugin.mode === 'client' ),
-          ssr : this.config.plugins.filter( plugin => plugin.mode === 'ssr' )
-        }
+        plugins : this.config.plugins
       }
-    }
+    })
 
-    createDenideFolder(options)
   }
 
   bundler () {
-      const compiler = webpack( require('./webpack.config') )
+      global.isFirstTime = true
 
-      return new Promise((resolve) => {
-        // build and watch entries files
-        compiler.watch({}, (_, stats) => {
-          // if is there error stop process
-          if ( stats.hasErrors() ) {
-            process.stdout.write(stats.toString() + '\n');
-          }
-
-          // if it is not first time file run
-          if ( !isFirstTime ) {
-            // re write server file to make nodmon reload server
-            const serverPath = path.resolve(process.cwd(), './server/index.js')
-            const content = fs.readFileSync( serverPath )
-            fs.writeFileSync( serverPath, content, 'utf-8')
-          }
-
-          isFirstTime = false
-
-          resolve(stats)
-        });
+      return Promise.all( getCompilers( require('./webpack.config'), global.isFirstTime ) ).then((stats) => {
+        global.isFirstTime = false
+        return stats
       })
   }
 

@@ -1,26 +1,24 @@
-import Vuex from 'vuex';
 import Vue from 'vue';
 import layout from '../layouts/default.vue';
 import { createRouter } from './router';
 import store from '../store/index';
 
-Vue.use(Vuex);
-
-global.Vue = Vue;
-
 export default function createApp(page) {
   const router = createRouter(page);
 
+  const options = { render: (h) => h(layout), store, router }
+
   // register ssr plugins
   {{#plugins.ssr}}
-  require('{{{ src }}}')
+  const plugin{{ index }} = require('{{{ src }}}')
+  if ( typeof plugin{{ index }}.default === 'function' ) { 
+    plugin{{ index }}.default(options)
+  }
   {{/plugins.ssr}}
 
-  const app = new Vue({
-    render: (h) => h(layout),
-    store: new Vuex.Store(store),
-    router,
-  });
+  const app = new Vue(options)
+
+  app.$i18n.locale = 'en'
 
   return { app, router };
 }
@@ -31,7 +29,10 @@ export default function createApp(page) {
  
   // register client plugins
   {{#plugins.client}} 
-  require('{{{ src }}}')
+  const plugin{{ index }} = require('{{{ src }}}')
+  if ( typeof plugin{{ index }}.default === 'function' ) { 
+    plugin{{ index }}.default(options)
+  }
   {{/plugins.client}}
 
 

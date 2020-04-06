@@ -4,7 +4,7 @@ const config = require('../denide.config');
 const Denide = require('denide');
 
 const denide = new Denide(config)
-denide.isProd = process.env.NODE_ENV === 'production'
+denide.config.isProd = process.env.NODE_ENV === 'production'
 
 async function start () {
   await denide.bundler()

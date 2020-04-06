@@ -3,11 +3,13 @@ const { renderPage } = require('./utils');
 const json2html = require('./json2html');
 const { JSDOM } = require('jsdom')
 const { mergeAndConcat } = require('merge-anything')
-
+const cookieParser = require('cookie-parser')
 const express = require('express');
 const app = express.Router();
 
 const rootPath = path.resolve(process.cwd())
+
+app.use( cookieParser() )
 
 module.exports = function (config) {
   app.use('/src', express.static( path.join(rootPath, '/dist') ))
@@ -34,7 +36,7 @@ module.exports = function (config) {
   for ( let path in routes ) {
 
     app.get(path, (req, res) => {
-      renderPage(path, {}, (template, assets) => {
+      renderPage({ path, req }, {}, (template, assets) => {
         const pagename = routes[path]
         const { document } = new JSDOM(template).window
 
