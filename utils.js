@@ -22,10 +22,12 @@ module.exports.createDirectoryContents = function (templatePath, newProjectPath,
       const writePath = `${newProjectPath}/${file}`;
       fs.writeFileSync(writePath, contents, 'utf8');
     } else if (stats.isDirectory()) {
-      fs.mkdirSync(`${newProjectPath}/${file}`);
+      if ( !fs.existsSync(`${newProjectPath}/${file}`) ) {
+        fs.mkdirSync(`${newProjectPath}/${file}`);
+      }
 
       // recursive call
-      createDirectoryContents(`${templatePath}/${file}`, `${newProjectPath}/${file}`);
+      this.createDirectoryContents(`${templatePath}/${file}`, `${newProjectPath}/${file}`);
     }
   });
 }
@@ -34,7 +36,7 @@ module.exports.createDenideFolder = (options) => {
     if ( !fs.existsSync(path.resolve(process.cwd(), './.denide')) ) {
       fs.mkdirSync( path.resolve( process.cwd(), './.denide' ) )
     }
-  
+
     this.createDirectoryContents( path.resolve(__dirname, './.denide'), path.resolve(process.cwd(), './.denide'), options)
 }
 
@@ -43,7 +45,7 @@ module.exports.classifyPlugins = (plugins) => {
         if ( typeof plugin === 'string' ) {
           plugin = { src : plugin, mode : 'ssr', index }
         }
-  
+
         if ( typeof plugin === 'object' ) {
           plugin = Object.assign({ src : plugin.src, mode : 'ssr', index }, plugin)
         }
@@ -78,13 +80,22 @@ module.exports.getCompilers = ( configs, isFirstTime ) => {
 
               // if it is not first time file run
               if ( !isFirstTime ) this.reloadServer()
-        
+
               resolve(stats)
             });
         }
-        
+
         compilers.push( new Promise(step) )
     })
 
     return compilers
+}
+
+module.exports.generateRoutes = (routes) => {
+  const result = []
+  for (let path in routes ) {
+    const pagename = routes[path]
+    result.push({ path, pagename })
+  }
+  return result
 }

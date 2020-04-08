@@ -2,17 +2,14 @@ import Router from 'vue-router'
 import Vue from 'vue'
 import json2html from './json2html.js'
 
-const routes = JSON.parse('{{{ routes }}}')
-
 Vue.use(Router)
 
-const view = (to, page) => resolve => {
-
+const view = (to, pagename, page) => resolve => {
   // if we are on server side pass page what pass from server to router
-  if ( typeof window !== 'object' ) { resolve(page); return }
+  if ( typeof window !== 'object' ) { return resolve(page) }
 
   // get page from pages
-  const pageChached = window.$__denide__pages[ routes[to] ]
+  const pageChached = window.$__denide__pages[ pagename ]
 
   // if page loaded before pass it to router
   if ( pageChached ) { resolve(pageChached); return }
@@ -32,29 +29,20 @@ const view = (to, page) => resolve => {
   window.$__denide__onPageLoad = (page) => resolve(page)
 
   function initPage ({ assets }) {
-    const addDataAttribute = (elm) => {
-      elm['data-page'] = routes[to]
-      return elm
-    }
-    json2html(assets, document, { push,
-      link : addDataAttribute,
-      script : addDataAttribute
-    })
+    console.log( assets )
+    json2html(assets, document, { push })
   }
 
-  fetch(`/page/${ routes[to] }`).then(res => res.json()).then(initPage)
+  fetch(`/page/${ pagename }`).then(res => res.json()).then(initPage)
 }
 
 export function createRouter (page) {
-  const Routes = []
-  
-  for ( let path in routes ) {
-    const route = routes[path]
-    Routes.push({ path, name : route, component : view(path, page) })
-  }
-
   return new Router({
     mode: 'history',
-    routes: Routes
+    routes: [
+      {{#routes}}
+      { path : '{{{ path }}}', name : '{{ pagename }}', component : view('{{{ path }}}', '{{ pagename }}', page) },
+      {{/routes}}
+    ]
   })
 }

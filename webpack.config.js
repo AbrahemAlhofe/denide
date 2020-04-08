@@ -7,7 +7,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { VueLoaderPlugin } = require('vue-loader')
 
-const isProduction = false
+const isProduction = process.NODE_ENV === 'production'
 
 const options = {
   mode : isProduction ? 'development' : 'production',

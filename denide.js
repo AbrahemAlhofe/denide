@@ -1,5 +1,6 @@
 const { mergeAndConcat } = require('merge-anything')
-const { createDenideFolder, getCompilers, classifyPlugins } = require('./utils')
+const { createDenideFolder, getCompilers, classifyPlugins, generateRoutes } = require('./utils')
+const path = require('path');
 
 class Denide {
   constructor (config) {
@@ -9,23 +10,30 @@ class Denide {
       link : [],
       routes : {},
       script : [],
+      routerMiddlewares : [],
+      serverMiddleware : {},
       port : 3000
     }, config)
-
-    this.render = require('./.denide/render')( this.config )
 
     // classify plugins
     this.config.plugins = classifyPlugins( this.config.plugins )
 
     createDenideFolder({
       'router.js' : {
-        routes : JSON.stringify(this.config.routes)
+        routes : generateRoutes( this.config.routes )
       },
       'App.js' : {
         plugins : this.config.plugins
+      },
+      'render.js' : {
+        routes : generateRoutes( this.config.routes )
+      },
+      'utils.js' : {
+        middlewares : this.config.routerMiddlewares
       }
     })
 
+    this.render = require( path.resolve( process.cwd(), './.denide/render') )( this.config )
   }
 
   bundler () {
