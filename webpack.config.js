@@ -6,12 +6,17 @@ const path = require('path')
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { VueLoaderPlugin } = require('vue-loader')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const TerserJSPlugin = require('terser-webpack-plugin');
 
-const isProduction = process.NODE_ENV === 'production'
+const isProduction = process.env.NODE_ENV === 'production'
 
 const options = {
-  mode : isProduction ? 'development' : 'production',
+  mode : isProduction ? 'production' : 'development',
   entry : entries,
+  optimization: {
+    minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+  },
   module : {
     rules : [
      {

@@ -3,56 +3,82 @@ const { renderPage } = require('./utils');
 const cookieParser = require('cookie-parser')
 const express = require('express');
 const app = express.Router();
+
+const json2html = require('./json2html')
+const { JSDOM } = require('jsdom')
 const { mergeAndConcat } = require('merge-anything')
+const Renderer = require('vue-server-renderer').createRenderer
+
+const { createApp } = require('../dist/back/app.js')
+
 const rootPath = path.resolve(process.cwd())
 
 app.use( cookieParser() )
 
 module.exports = function (config) {
+  const { routes, head, body } = config
+
   app.use('/src', express.static( path.join(rootPath, '/dist') ))
   app.use('/assets', express.static( path.join(rootPath, '/assets') ))
 
   app.get('/page/:page', (req, res) => {
-    const routes = require('./entries')('back')
-    const page = require( path.resolve(rootPath, routes[req.params.page]) )
+    const page = require(`../dist/back/${req.params.page}`)
 
-    const data = {
+    const assets = mergeAndConcat({
       head : {
         link : [{ rel : 'stylesheet', href : `/src/${ req.params.page }.css` }]
       },
       body : {
         script : [{ src : `/src/front/${ req.params.page }.js` }]
       }
-    }
+    }, page.html || {})
 
-    res.send({ assets : mergeAndConcat(data, page.html || {}) })
-
+    res.send({ assets })
   })
 
-  const { routes, head, body } = config
-
   const middleware = (path, pagename) => (req, res) => {
-    const context = { html : {} }
+    const context = {
+      head : mergeAndConcat(head, {
+        link : [
+          { rel : 'stylesheet', href : `/src/${ pagename }.css` },
+          { rel : 'stylesheet', href : `/src/app.css`}
+        ]
+      }),
+      body : mergeAndConcat(body, {
+        script : [
+          { src : `/src/front/${ pagename }.js` },
+          { src : '/src/front/app.js' }
+        ]
+      })
+    }
 
-    context.html.head = mergeAndConcat(head, {
-      link : [
-        { rel : 'stylesheet', href : `/src/${ pagename }.css` },
-        { rel : 'stylesheet', href : `/src/app.css`}
-      ]
+    const ssr = Renderer({
+      template (result, context) {
+        const { document } = new JSDOM(result).window
+        const { head, body } = context
+        return `<html> ${ json2html({ head, body }, document).documentElement.innerHTML } </html>`
+      }
     })
 
-    context.html.body = mergeAndConcat(body, {
-      script : [
-        { src : `/src/front/${ pagename }.js` },
-        { src : '/src/front/app.js' }
-      ]
-    })
+    const page = require(`../dist/back/${ pagename }.js`)
+    const { app, router } = createApp(page)
 
-    console.log( req.url, path, pagename )
+    // set server-side router's location
+    router.push(req.url)
 
-    renderPage(req, context, (template, assets) => {
-      res.send(template)
-    })
+    // wait until router has resolved possible async components and hooks
+    router.onReady(() => {
+      const matchedComponents = router.getMatchedComponents()
+      // no matched routes, reject with 404
+      if (!matchedComponents.length) {
+        next()
+      }
+
+      ssr.renderToString( app, mergeAndConcat(page.html, context), (err, html) => {
+        if (err) console.log( err )
+        res.send( html )
+      })
+    }, err => console.log(`Router [warn] : ${err}`))
   }
 
   {{#routes}}
@@ -65,3 +91,6 @@ module.exports = function (config) {
 
   return app
 }
+
+/*
+*/

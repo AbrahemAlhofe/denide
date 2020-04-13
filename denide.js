@@ -33,15 +33,14 @@ class Denide {
       }
     })
 
-    this.render = require( path.resolve( process.cwd(), './.denide/render') )( this.config )
   }
 
   bundler () {
       global.isFirstTime = true
-
       return Promise.all( getCompilers( require('./webpack.config'), global.isFirstTime ) ).then((stats) => {
-        global.isFirstTime = false
-        return stats
+          global.isFirstTime = false
+          this.render = require( path.resolve( process.cwd(), './.denide/render') )( this.config )
+          return stats
       })
   }
 

@@ -41,13 +41,13 @@ module.exports.createDenideFolder = (options) => {
 }
 
 module.exports.classifyPlugins = (plugins) => {
-    plugins = plugins.map((plugin, index) => {
+    plugins = plugins.map((plugin) => {
         if ( typeof plugin === 'string' ) {
-          plugin = { src : plugin, mode : 'ssr', index }
+          plugin = { src : plugin, mode : 'ssr' }
         }
 
         if ( typeof plugin === 'object' ) {
-          plugin = Object.assign({ src : plugin.src, mode : 'ssr', index }, plugin)
+          plugin = Object.assign({ src : plugin.src, mode : 'ssr' }, plugin)
         }
         return plugin
     })
