@@ -40,13 +40,13 @@ export function createRouter (page) {
   return new Router({
     mode: 'history',
     routes: [
-      <% routes.forEach( route => { %>
+      {% for route of routes %}
         {
-          path : '<%- route.path %>',
-          name : '<%- route.pagename %>',
-          component : view('<%- route.path %>', '<%- route.pagename %>', page)
+          path : '{{ route.path | safe }}',
+          name : '{{ route.pagename }}',
+          component : view('{{ route.path | safe }}', '{{ route.pagename }}', page)
         },
-      <% }) %>
+      {%- endfor %}
     ]
   })
 }

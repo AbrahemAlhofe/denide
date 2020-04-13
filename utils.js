@@ -1,4 +1,4 @@
-const mustache = require('mustache')
+const nunjucks = require('nunjucks')
 const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack');
@@ -16,7 +16,7 @@ module.exports.createDirectoryContents = function (templatePath, newProjectPath,
       var contents = fs.readFileSync(origFilePath, 'utf8');
 
       if ( file in data ) {
-        contents =  mustache.render(contents, data[file])
+        contents =  nunjucks.renderString(contents, data[file])
       }
 
       const writePath = `${newProjectPath}/${file}`;
