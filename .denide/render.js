@@ -81,9 +81,9 @@ module.exports = function (config) {
     }, err => console.log(`Router [warn] : ${err}`))
   }
 
-  {% for route of routes %}
-  app.get('{{ route.path | safe }}', middleware('{{ route.path | safe }}', '{{ route.pagename }}') )
-  {%- endfor %}
+  {{#routes}}
+  app.get('{{{ path }}}', middleware('{{{ path }}}', '{{ pagename }}') )
+  {{/routes}}
 
   app.use(config.serverMiddleware.path, require(
     path.resolve(rootPath, config.serverMiddleware.handler)

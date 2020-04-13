@@ -1,4 +1,4 @@
-const nunjucks = require('nunjucks')
+const mustache = require('mustache')
 const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack');
@@ -16,7 +16,7 @@ module.exports.createDirectoryContents = function (templatePath, newProjectPath,
       var contents = fs.readFileSync(origFilePath, 'utf8');
 
       if ( file in data ) {
-        contents =  nunjucks.renderString(contents, data[file])
+        contents =  mustache.render(contents, data[file])
       }
 
       const writePath = `${newProjectPath}/${file}`;
@@ -43,11 +43,11 @@ module.exports.createDenideFolder = (options) => {
 module.exports.classifyPlugins = (plugins) => {
     plugins = plugins.map((plugin) => {
         if ( typeof plugin === 'string' ) {
-          plugin = { src : plugin, mode : 'ssr' }
+          plugin = { src : plugin, mode : 'ssr', index }
         }
 
         if ( typeof plugin === 'object' ) {
-          plugin = Object.assign({ src : plugin.src, mode : 'ssr' }, plugin)
+          plugin = Object.assign({ src : plugin.src, mode : 'ssr', index }, plugin)
         }
         return plugin
     })

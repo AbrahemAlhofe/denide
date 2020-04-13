@@ -9,9 +9,9 @@ export function createApp(page) {
   const store = createStore();
   const middlewares = []
 
-  {% for middleware of middlewares %}
-  middlewares.push( require( path.resolve( process.cwd(), '{{ middleware.path | safe }}' ) ) )
-  {% endfor %}
+  {{#middlewares}}
+  middlewares.push( require( path.resolve( process.cwd(), '{{{ path }}}' ) ) )
+  {{/middlewares}}
 
   const app = {
     store,
@@ -35,15 +35,15 @@ export function createApp(page) {
   }
 
   // register ssr plugins
-  {% for plugin, index of plugin.ssr %}
-    const plugin{{ index }} = require('{{ plugin.src }}')
+  {{#plugins.ssr}}
+    const plugin{{ index }} = require('{{{ src }}}')
     if ( typeof plugin{{ index }}.default === 'function' ) {
       plugin{{ index }}.default(app.context, inject)
     }
-  {% endfor %}
+  {{/plugins.ssr}}
 
-  router.beforeEach((to, from, next) =} {
-    middlewares.forEach( middleware =} middleware(app.context) )
+  router.beforeEach((to, from, next) => {
+    middlewares.forEach( middleware => middleware(app.context) )
     next()
   })
 
@@ -55,14 +55,14 @@ export function createApp(page) {
   const { app, router } = createApp();
 
   // register client plugins
-  {% for plugin, index of plugin.client %}
-    const plugin{{ index }} = require('{{ plugin.src }}')
+  {{#plugins.client}}
+    const plugin{{ index }} = require('{{{ src }}}')
     if ( typeof plugin{{ index }}.default === 'function' ) {
       plugin{{ index }}.default(app.context, inject)
     }
-  {% endfor %}
+  {{/plugins.client}}
 
-  router.onReady(() =} {
+  router.onReady(() => {
     app.$mount('body } div');
   });
 }());

@@ -40,13 +40,13 @@ export function createRouter (page) {
   return new Router({
     mode: 'history',
     routes: [
-      {% for route of routes %}
+      {{#routes}}
         {
-          path : '{{ route.path | safe }}',
-          name : '{{ route.pagename }}',
-          component : view('{{ route.path | safe }}', '{{ route.pagename }}', page)
+          path : '{{{ path }}}',
+          name : '{{ pagename }}',
+          component : view('{{{ path }}}', '{{ route.pagename }}', page)
         },
-      {%- endfor %}
+      {{/routes}}
     ]
   })
 }
