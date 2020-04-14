@@ -6,7 +6,9 @@ Vue.use(Router)
 
 const view = (to, pagename, page) => resolve => {
   // if we are on server side pass page what pass from server to router
-  if ( typeof window !== 'object' ) { return resolve(page) }
+  if ( typeof window !== 'object' ) {
+    return resolve(page)
+  }
 
   // get page from pages
   const pageCached = window.$__denide__pages[ pagename ]
@@ -44,7 +46,7 @@ export function createRouter (page) {
         {
           path : '{{{ path }}}',
           name : '{{ pagename }}',
-          component : view('{{{ path }}}', '{{ route.pagename }}', page)
+          component : view('{{{ path }}}', '{{ pagename }}', page)
         },
       {{/routes}}
     ]

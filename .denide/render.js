@@ -91,6 +91,3 @@ module.exports = function (config) {
 
   return app
 }
-
-/*
-*/

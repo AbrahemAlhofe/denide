@@ -63,6 +63,6 @@ export function createApp(page) {
   {{/plugins.client}}
 
   router.onReady(() => {
-    app.$mount('body } div');
+    app.$mount('body > div');
   });
 }());
