@@ -9,6 +9,8 @@ const { VueLoaderPlugin } = require('vue-loader')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 
+const { mergeAndConcat } = require('merge-anything')
+
 const isProduction = process.env.NODE_ENV === 'production'
 
 const options = {
@@ -80,16 +82,22 @@ const options = {
   ]
 }
 
-const front = Object.assign({
+const front = mergeAndConcat({
   target : 'web',
+  entry : {
+    'entry-client' : './.denide/entry-client.js'
+  },
   output : {
     filename : './front/[name].js'
   }
 }, options)
 
 
-const back = Object.assign({
+const back = mergeAndConcat({
   target : 'node',
+  entry : {
+    'entry-server' : './.denide/entry-server.js'
+  },
   output : {
     filename : './back/[name].js',
     libraryTarget: 'commonjs'

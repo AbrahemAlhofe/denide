@@ -30,6 +30,9 @@ class Denide {
       },
       'utils.js' : {
         middlewares : this.config.routerMiddlewares
+      },
+      'entry-client.js' : {
+        plugins : this.config.plugins
       }
     })
 

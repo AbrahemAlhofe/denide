@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import VueMeta from 'vue-meta'
 import { mergeAndConcat } from 'merge-anything';
 const mixin = {}
 
@@ -12,12 +13,19 @@ mixin.mounted = async function () {
 
 mixin.created = async function () {
   // Head Management
+  if ( typeof this.$options.head !== 'function' ) return
+  const head = this.$options.head.call(this) || {}
+
   if ( typeof window !== 'object' ) {
-    if ( typeof this.$options.head !== 'function' ) return
-    const head = this.$options.head.call(this) || {}
     this.$ssrContext.head = mergeAndConcat(head, this.$ssrContext.head)
+  } else {
+    document.title = head.title
   }
 }
 
 // Register Plugin
 Vue.use({ install (vue, options) { vue.mixin(mixin) } })
+Vue.use(VueMeta, {
+  // optional pluginOptions
+  refreshOnceOnNavigation: true
+})

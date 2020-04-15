@@ -49,20 +49,3 @@ export function createApp(page) {
 
   return { app : new Vue(app), router };
 }
-
-(function client() {
-  if (typeof window === 'undefined') return;
-  const { app, router } = createApp();
-
-  // register client plugins
-  {{#plugins.client}}
-    const plugin{{ index }} = require('{{{ src }}}')
-    if ( typeof plugin{{ index }}.default === 'function' ) {
-      plugin{{ index }}.default(app.context, inject)
-    }
-  {{/plugins.client}}
-
-  router.onReady(() => {
-    app.$mount('body > div');
-  });
-}());

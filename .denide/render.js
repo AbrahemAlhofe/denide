@@ -9,7 +9,7 @@ const { JSDOM } = require('jsdom')
 const { mergeAndConcat } = require('merge-anything')
 const Renderer = require('vue-server-renderer').createRenderer
 
-const { createApp } = require('../dist/back/app.js')
+const createApp = require('../dist/back/entry-server.js').default
 
 const rootPath = path.resolve(process.cwd())
 
@@ -41,13 +41,13 @@ module.exports = function (config) {
       head : mergeAndConcat(head, {
         link : [
           { rel : 'stylesheet', href : `/src/${ pagename }.css` },
-          { rel : 'stylesheet', href : `/src/app.css`}
+          { rel : 'stylesheet', href : `/src/entry-client.css`}
         ]
       }),
       body : mergeAndConcat(body, {
         script : [
           { src : `/src/front/${ pagename }.js` },
-          { src : '/src/front/app.js' }
+          { src : '/src/front/entry-client.js' }
         ]
       })
     }

@@ -1,6 +1,9 @@
 import Router from 'vue-router'
 import Vue from 'vue'
 import json2html from './json2html.js'
+import NProgress from 'nprogress';
+
+NProgress.configure({ showSpinner: false });
 
 Vue.use(Router)
 
@@ -22,6 +25,7 @@ const view = (to, pagename, page) => resolve => {
   }
 
   function initPage ({ assets }) {
+    NProgress.done();
     json2html(assets, document, {
       push ( document, elm ) {
         if ( elm.localName === 'link' || elm.localName === 'script' ) {
@@ -35,6 +39,8 @@ const view = (to, pagename, page) => resolve => {
     })
   }
 
+  console.log('client side only !')
+  NProgress.start();
   fetch(`/page/${ pagename }`).then(res => res.json()).then(initPage)
 }
 
