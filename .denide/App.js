@@ -4,13 +4,13 @@ import { createRouter } from './router';
 import { createStore } from './store';
 import './mixin.js'
 
-export function createApp(page) {
+export function createApp(page, req = {}, res = {}) {
   const router = createRouter(page);
   const store = createStore();
   const middlewares = []
 
   {{#middlewares}}
-  middlewares.push( require( path.resolve( process.cwd(), '{{{ path }}}' ) ) )
+  middlewares.push( require('{{{ path }}}') )
   {{/middlewares}}
 
   const app = {
@@ -26,8 +26,12 @@ export function createApp(page) {
     store,
     router,
     middlewares,
-    app
+    app,
+    req,
+    res
   }
+
+  app.store.$router = app.router
 
   function inject (key, value) {
     app[key] = value

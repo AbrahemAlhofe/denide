@@ -23,13 +23,14 @@ class Denide {
         routes : generateRoutes( this.config.routes )
       },
       'App.js' : {
-        plugins : this.config.plugins
+        plugins : this.config.plugins,
+        middlewares : this.config.routerMiddlewares.map(middleware => {
+          middleware.path = path.resolve( process.cwd(), middleware.path ).replace(/\\/g, '/')
+          return middleware
+        })
       },
       'render.js' : {
         routes : generateRoutes( this.config.routes )
-      },
-      'utils.js' : {
-        middlewares : this.config.routerMiddlewares
       },
       'entry-client.js' : {
         plugins : this.config.plugins

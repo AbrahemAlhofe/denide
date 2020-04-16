@@ -36,7 +36,7 @@ module.exports = function (config) {
     res.send({ assets })
   })
 
-  const middleware = (path, pagename) => (req, res) => {
+  const middleware = (path, pagename) => (req, res, next) => {
     const context = {
       head : mergeAndConcat(head, {
         link : [
@@ -61,7 +61,7 @@ module.exports = function (config) {
     })
 
     const page = require(`../dist/back/${ pagename }.js`)
-    const { app, router } = createApp(page)
+    const { app, router } = createApp(page, req, res)
 
     // set server-side router's location
     router.push(req.url)
