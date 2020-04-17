@@ -2,8 +2,10 @@ const path = require('path');
 const { renderPage } = require('./utils');
 const cookieParser = require('cookie-parser')
 const express = require('express');
+const mustache = require('mustache');
 const app = express.Router();
 
+const fs = require('fs')
 const json2html = require('./json2html')
 const { JSDOM } = require('jsdom')
 const { mergeAndConcat } = require('merge-anything')
@@ -12,11 +14,22 @@ const Renderer = require('vue-server-renderer').createRenderer
 const createApp = require('../dist/back/entry-server.js').default
 
 const rootPath = path.resolve(process.cwd())
+var cacheBag = {}
 
 app.use( cookieParser() )
 
 module.exports = function (config) {
   const { routes, head, body } = config
+
+  app.use(config.serverMiddleware.path, require(
+    path.resolve(rootPath, config.serverMiddleware.handler)
+  ))
+
+  app.get('/entry-client.js', (req, res) => {
+    const file = fs.readFileSync( path.join(rootPath, '/dist/front/entry-client.js') )
+    const file_edite = mustache.render(file.toString(), { value : JSON.stringify(cacheBag).replace(/"/g, '\\"') })
+    res.send( Buffer.from(file_edite) )
+  })
 
   app.use('/src', express.static( path.join(rootPath, '/dist') ))
   app.use('/assets', express.static( path.join(rootPath, '/assets') ))
@@ -47,7 +60,7 @@ module.exports = function (config) {
       body : mergeAndConcat(body, {
         script : [
           { src : `/src/front/${ pagename }.js` },
-          { src : '/src/front/entry-client.js' }
+          { src : '/entry-client.js' }
         ]
       })
     }
@@ -60,8 +73,10 @@ module.exports = function (config) {
       }
     })
 
+
     const page = require(`../dist/back/${ pagename }.js`)
-    const { app, router } = createApp(page, req, res)
+    var redirectPath = ''
+    const { app, router } = createApp(page, req, res, state => cacheBag = state, path => redirectPath = path)
 
     // set server-side router's location
     router.push(req.url)
@@ -76,7 +91,8 @@ module.exports = function (config) {
 
       ssr.renderToString( app, mergeAndConcat(page.html, context), (err, html) => {
         if (err) console.log( err )
-        res.send( html )
+        if ( redirectPath ) return res.redirect( redirectPath )
+        res.send(html)
       })
     }, err => console.log(`Router [warn] : ${err}`))
   }
@@ -85,9 +101,6 @@ module.exports = function (config) {
   app.get('{{{ path }}}', middleware('{{{ path }}}', '{{ pagename }}') )
   {{/routes}}
 
-  app.use(config.serverMiddleware.path, require(
-    path.resolve(rootPath, config.serverMiddleware.handler)
-  ))
 
   return app
 }

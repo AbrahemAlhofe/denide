@@ -54,7 +54,8 @@ module.exports.classifyPlugins = (plugins) => {
 
     return {
         client : plugins.filter( plugin => plugin.mode === 'client' ),
-        ssr : plugins.filter( plugin => plugin.mode === 'ssr' )
+        ssr : plugins.filter( plugin => plugin.mode === 'ssr' ),
+        server : plugins.filter( plugin => plugin.mode === 'server' )
     }
 }
 

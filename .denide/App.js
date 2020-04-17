@@ -4,9 +4,9 @@ import { createRouter } from './router';
 import { createStore } from './store';
 import './mixin.js'
 
-export function createApp(page, req = {}, res = {}) {
+export function createApp(page, req = {}, res = {}, setCacheBag, redirectServer) {
   const router = createRouter(page);
-  const store = createStore();
+  const store = createStore(setCacheBag);
   const middlewares = []
 
   {{#middlewares}}
@@ -22,9 +22,18 @@ export function createApp(page, req = {}, res = {}) {
     render: (h) => h(layout)
   }
 
+  let route = {}
+
+  if ( typeof window !== 'object' ) {
+    route = app.router.resolve(req.path).route
+  } else {
+    route = app.router.resolve( new URL( window.location ).pathname ).route
+  }
+
   app.context = {
     store,
     router,
+    route,
     middlewares,
     app,
     req,
@@ -33,7 +42,10 @@ export function createApp(page, req = {}, res = {}) {
 
   app.store.$router = app.router
 
+  app.store.app = app
+
   function inject (key, value) {
+    key = '$' + key
     app[key] = value
     app.store[key] = value
   }
@@ -46,10 +58,20 @@ export function createApp(page, req = {}, res = {}) {
     }
   {{/plugins.ssr}}
 
+  function redirect (path) {
+    if ( typeof window == 'object' ) {
+      const url = new URL( window.location )
+      url.pathname = path
+      window.location = url.href
+    } else {
+      redirectServer(path)
+    }
+  }
+
   router.beforeEach((to, from, next) => {
-    middlewares.forEach( middleware => middleware(app.context) )
+    middlewares.forEach( middleware => middleware({ ...app.context, redirect }) )
     next()
   })
 
-  return { app : new Vue(app), router };
+  return { app : new Vue(app), router, inject };
 }

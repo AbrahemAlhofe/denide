@@ -34,6 +34,9 @@ class Denide {
       },
       'entry-client.js' : {
         plugins : this.config.plugins
+      },
+      'entry-server.js' : {
+        plugins : this.config.plugins
       }
     })
 

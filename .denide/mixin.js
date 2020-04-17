@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import VueMeta from 'vue-meta'
 import { mergeAndConcat } from 'merge-anything';
 const mixin = {}
 
@@ -24,8 +23,8 @@ mixin.created = async function () {
 }
 
 // Register Plugin
-Vue.use({ install (vue, options) { vue.mixin(mixin) } })
-Vue.use(VueMeta, {
-  // optional pluginOptions
-  refreshOnceOnNavigation: true
+Vue.use({
+  install (vue, options) {
+    vue.mixin(mixin)
+  }
 })

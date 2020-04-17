@@ -89,7 +89,8 @@ function installDependencies(path) {
     var Dependencies = [
         "nodemon",
         "cross-env",
-        "express"
+        "express",
+        "denide"
     ];
     // Install Dependencies
     var npm = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', __spreadArrays(['install'], Dependencies), {
