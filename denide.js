@@ -2,6 +2,11 @@ const { mergeAndConcat } = require('merge-anything')
 const { createDenideFolder, getCompilers, classifyPlugins, generateRoutes } = require('./utils')
 const path = require('path');
 
+
+/*
+ - remove send package from 'uiliue'
+ - add compression pacakge
+*/
 class Denide {
   constructor (config) {
     // merge config with default options

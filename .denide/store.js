@@ -6,6 +6,8 @@ store = Object.assign(store, { plugins : [] })
 
 if ( typeof window === "object" ) store = { ...store, state : JSON.parse('{{{ value }}}') }
 
+if ( typeof window === 'object' ) console.log('store : ', store )
+
 Vue.use( Vuex )
 
 export function createStore (setCacheBag) {

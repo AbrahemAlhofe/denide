@@ -10,6 +10,7 @@ const json2html = require('./json2html')
 const { JSDOM } = require('jsdom')
 const { mergeAndConcat } = require('merge-anything')
 const Renderer = require('vue-server-renderer').createRenderer
+const compression = require('compression')
 
 const createApp = require('../dist/back/entry-server.js').default
 
@@ -18,18 +19,14 @@ var cacheBag = {}
 
 app.use( cookieParser() )
 
+app.use(compression())
+
 module.exports = function (config) {
   const { routes, head, body } = config
 
   app.use(config.serverMiddleware.path, require(
     path.resolve(rootPath, config.serverMiddleware.handler)
   ))
-
-  app.get('/entry-client.js', (req, res) => {
-    const file = fs.readFileSync( path.join(rootPath, '/dist/front/entry-client.js') )
-    const file_edite = mustache.render(file.toString(), { value : JSON.stringify(cacheBag).replace(/"/g, '\\"') })
-    res.send( Buffer.from(file_edite) )
-  })
 
   app.use('/src', express.static( path.join(rootPath, '/dist') ))
   app.use('/assets', express.static( path.join(rootPath, '/assets') ))
@@ -49,7 +46,7 @@ module.exports = function (config) {
     res.send({ assets })
   })
 
-  const middleware = (path, pagename) => (req, res, next) => {
+  const middleware = pagename => (req, res, next) => {
     const context = {
       head : mergeAndConcat(head, {
         link : [
@@ -60,7 +57,7 @@ module.exports = function (config) {
       body : mergeAndConcat(body, {
         script : [
           { src : `/src/front/${ pagename }.js` },
-          { src : '/entry-client.js' }
+          { src : '/src/entry-client.js' }
         ]
       })
     }
@@ -92,15 +89,19 @@ module.exports = function (config) {
       ssr.renderToString( app, mergeAndConcat(page.html, context), (err, html) => {
         if (err) console.log( err )
         if ( redirectPath ) return res.redirect( redirectPath )
+
+        const file = fs.readFileSync( path.join(rootPath, '/dist/front/entry-client.js') )
+        const content = mustache.render(file.toString(), { value : JSON.stringify(cacheBag).replace(/"/g, '\\"') })
+        fs.writeFileSync( path.join( rootPath, '/dist/entry-client.js' ), content )
+
         res.send(html)
       })
     }, err => console.log(`Router [warn] : ${err}`))
   }
 
   {{#routes}}
-  app.get('{{{ path }}}', middleware('{{{ path }}}', '{{ pagename }}') )
+  app.get('{{{ path }}}', middleware('{{ pagename }}') )
   {{/routes}}
-
 
   return app
 }

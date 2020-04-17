@@ -16,9 +16,6 @@ const isProduction = process.env.NODE_ENV === 'production'
 const options = {
   mode : isProduction ? 'production' : 'development',
   entry : entries,
-  optimization: {
-    minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
-  },
   module : {
     rules : [
      {
@@ -86,6 +83,9 @@ const front = mergeAndConcat({
   target : 'web',
   entry : {
     'entry-client' : './.denide/entry-client.js'
+  },
+  optimization: {
+    minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
   },
   output : {
     filename : './front/[name].js'
