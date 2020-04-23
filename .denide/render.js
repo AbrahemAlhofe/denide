@@ -56,6 +56,7 @@ module.exports = function (config) {
       }),
       body : mergeAndConcat(body, {
         script : [
+          { src : `/src/front/common.js` },
           { src : `/src/front/${ pagename }.js` },
           { src : '/src/entry-client.js' }
         ]

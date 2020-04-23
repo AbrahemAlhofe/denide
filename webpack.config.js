@@ -1,6 +1,7 @@
 const nodeExternals = require('webpack-node-externals');
 const entries = require('./.denide/entries')('entry')
 const path = require('path')
+const webpack = require('webpack')
 
 // Plugins
 const CopyPlugin = require('copy-webpack-plugin');
@@ -8,6 +9,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { VueLoaderPlugin } = require('vue-loader')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const { mergeAndConcat } = require('merge-anything')
 
@@ -85,11 +87,20 @@ const front = mergeAndConcat({
     'entry-client' : './.denide/entry-client.js'
   },
   optimization: {
+    usedExports: true,
+    splitChunks: {
+      cacheGroups: {
+        commons : { test : /[\\/]node_modules[\\/]/, name : 'common', chunks : 'all' }
+      }
+    },
     minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
   },
   output : {
     filename : './front/[name].js'
-  }
+  },
+  plugins: [
+    // new BundleAnalyzerPlugin()
+  ]
 }, options)
 
 

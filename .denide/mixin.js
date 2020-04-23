@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import { mergeAndConcat } from 'merge-anything';
 const mixin = {}
 
 mixin.serverPrefetch = async function () {
@@ -16,7 +15,7 @@ mixin.created = async function () {
   const head = this.$options.head.call(this) || {}
 
   if ( typeof window !== 'object' ) {
-    this.$ssrContext.head = mergeAndConcat(head, this.$ssrContext.head)
+    this.$ssrContext.head = Object.assign(head, this.$ssrContext.head)
   } else {
     document.title = head.title
   }

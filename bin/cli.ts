@@ -2,7 +2,7 @@
 const program = require('commander');
 const fs = require('fs');
 const path = require('path');
-const package: {
+const packageConfig: {
     version : string,
     description : string
 } = JSON.parse( fs.readFileSync( path.resolve(__dirname, '../package.json') ) )
@@ -11,8 +11,8 @@ const consola = require('consola');
 
 // init cmd programm
 program
-  .version(package.version)
-  .description(package.description)
+  .version(packageConfig.version)
+  .description(packageConfig.description)
 
 function createPackageFile(path: string): Promise<any> {
   const npm = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['init', '-y'], {
@@ -33,7 +33,7 @@ function createPackageFile(path: string): Promise<any> {
 function createDirectoryContents (templatePath: string, newProjectPath: string): void {
   const filesToCreate = fs.readdirSync(templatePath);
 
-  filesToCreate.forEach(file => {
+  filesToCreate.forEach((file: string) => {
     const origFilePath = `${templatePath}/${file}`;
 
     // get stats about the current file
@@ -72,7 +72,7 @@ function installDependencies (path: string): Promise<any> {
   })
 }
 
-function initGit(path): Promise<any> {
+function initGit(path: string): Promise<any> {
   const npm = spawn('git', ['init'], {
     cwd : path
   });
@@ -81,7 +81,7 @@ function initGit(path): Promise<any> {
   })
 }
 
-async function createProject (project_name) {
+async function createProject (project_name: string) {
   const current_path = path.join(process.cwd(), project_name)
   // create project folder
   consola.info('create project folder')

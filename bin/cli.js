@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -45,13 +46,13 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 var program = require('commander');
 var fs = require('fs');
 var path = require('path');
-var package = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../package.json')));
+var packageConfig = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../package.json')));
 var spawn = require('child_process').spawn;
 var consola = require('consola');
 // init cmd programm
 program
-    .version(package.version)
-    .description(package.description);
+    .version(packageConfig.version)
+    .description(packageConfig.description);
 function createPackageFile(path) {
     var npm = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['init', '-y'], {
         cwd: path

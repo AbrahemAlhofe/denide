@@ -80,7 +80,10 @@ module.exports.getCompilers = ( configs, isFirstTime ) => {
               }
 
               // if it is not first time file run
-              if ( !isFirstTime ) this.reloadServer()
+              if ( !isFirstTime ) {
+                console.log('Reload Server ...')
+                this.reloadServer()
+              }
 
               resolve(stats)
             });
