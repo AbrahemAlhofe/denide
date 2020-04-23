@@ -44,6 +44,10 @@ const options = {
         }
       },
       {
+         loader: "vue-svg-inline-loader",
+         options: {}
+      },
+      {
         test: /\.html$/i,
         loader: 'html-loader',
       },
