@@ -44,19 +44,19 @@ const options = {
         }
       },
       {
-         loader: "vue-svg-inline-loader",
-         options: {}
-      },
-      {
         test: /\.html$/i,
         loader: 'html-loader',
       },
       {
-       test: /\.css$/i,
-       use: [ !isProduction ? 'vue-style-loader' : MiniCssExtractPlugin.loader, 'css-loader' ]
+        test: /\.css$/i,
+        use: [ !isProduction ? 'vue-style-loader' : MiniCssExtractPlugin.loader, 'css-loader' ]
       },
       {
-        test: /\.(png|jpe?g|gif|svg)$/i,
+        test: /\.svg$/,
+        use: ['babel-loader', 'vue-svg-loader'],
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
         use: [
           {
             loader: 'url-loader',
