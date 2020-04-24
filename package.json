@@ -1,6 +1,6 @@
 {
   "name": "denide",
-  "version": "1.9.2",
+  "version": "2.0.0",
   "description": "Denide is server side framework for vue js to load pages page by page when user need it",
   "main": "denide.js",
   "repository": "https://github.com/AbrahemAlhofe/denide.git",
@@ -41,6 +41,7 @@
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
+    "raw-loader": "^4.0.1",
     "sass-loader": "^8.0.2",
     "svg-inline-loader": "^0.8.2",
     "terser-webpack-plugin": "^2.3.5",

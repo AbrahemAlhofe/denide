@@ -52,8 +52,8 @@ const options = {
         use: [ !isProduction ? 'vue-style-loader' : MiniCssExtractPlugin.loader, 'css-loader' ]
       },
       {
-        test: /\.svg$/,
-        use: ['babel-loader', 'vue-svg-loader'],
+        test: /\.svg/i,
+        use: 'raw-loader',
       },
       {
         test: /\.(png|jpe?g|gif)$/i,
