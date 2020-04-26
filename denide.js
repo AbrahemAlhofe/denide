@@ -27,21 +27,22 @@ class Denide {
       'router.js' : {
         routes : generateRoutes( this.config.routes )
       },
-      'App.js' : {
+      'render.js' : {
+        routes : generateRoutes( this.config.routes )
+      },
+      'entry-client.js' : {
         plugins : this.config.plugins,
         middlewares : this.config.routerMiddlewares.map(middleware => {
           middleware.path = path.resolve( process.cwd(), middleware.path ).replace(/\\/g, '/')
           return middleware
         })
       },
-      'render.js' : {
-        routes : generateRoutes( this.config.routes )
-      },
-      'entry-client.js' : {
-        plugins : this.config.plugins
-      },
       'entry-server.js' : {
-        plugins : this.config.plugins
+        plugins : this.config.plugins,
+        middlewares : this.config.routerMiddlewares.map(middleware => {
+          middleware.path = path.resolve( process.cwd(), middleware.path ).replace(/\\/g, '/')
+          return middleware
+        })
       }
     })
 

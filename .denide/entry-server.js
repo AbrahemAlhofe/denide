@@ -4,7 +4,7 @@ import { createRouter } from './router';
 import { createStore } from './store';
 import './mixin.js'
 
-export function createApp(page, req = {}, res = {}, setCacheBag, redirectServer) {
+export default function createApp(page, req = {}, res = {}, setCacheBag, redirectServer) {
   const router = createRouter(page);
   const store = createStore(setCacheBag);
   const middlewares = []

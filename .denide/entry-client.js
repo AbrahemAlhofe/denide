@@ -5,8 +5,8 @@ import { createStore } from './store';
 import './mixin.js'
 import 'nprogress/nprogress.css'
 
-const router = createRouter(page);
-const store = createStore(setCacheBag);
+const router = createRouter();
+const store = createStore();
 const middlewares = []
 
 {{#middlewares}}
@@ -29,9 +29,7 @@ app.context = {
   router,
   route,
   middlewares,
-  app,
-  req,
-  res
+  app
 }
 
 app.store.$router = app.router
@@ -75,5 +73,5 @@ router.beforeEach((to, from, next) => {
 const App = new Vue(app)
 
 router.onReady(() => {
-  app.$mount('body > div');
+  App.$mount('body > div');
 });
