@@ -1,5 +1,4 @@
 const path = require('path');
-const { renderPage } = require('./utils');
 const cookieParser = require('cookie-parser')
 const express = require('express');
 const mustache = require('mustache');
