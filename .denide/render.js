@@ -27,18 +27,18 @@ module.exports = function (config) {
     path.resolve(rootPath, config.serverMiddleware.handler)
   ))
 
-  app.use('/src', express.static( path.join(rootPath, '/dist') ))
-  app.use('/assets', express.static( path.join(rootPath, '/assets') ))
+  app.use( express.static( path.join(rootPath, '/dist') ) )
+  app.use('/assets', express.static( path.join(rootPath, '/assets') ) )
 
   app.get('/page/:page', (req, res) => {
     const page = require(`../dist/back/${req.params.page}`)
 
     const assets = mergeAndConcat({
       head : {
-        link : [{ rel : 'stylesheet', href : `/src/${ req.params.page }.css` }]
+        link : [{ rel : 'stylesheet', href : `/${ req.params.page }.css` }]
       },
       body : {
-        script : [{ src : `/src/front/${ req.params.page }.js` }]
+        script : [{ src : `/front/${ req.params.page }.js`, async : true }]
       }
     }, page.html || {})
 
@@ -49,15 +49,15 @@ module.exports = function (config) {
     const context = {
       head : mergeAndConcat(head, {
         link : [
-          { rel : 'stylesheet', href : `/src/${ pagename }.css` },
-          { rel : 'stylesheet', href : `/src/entry-client.css`}
+          { rel : 'stylesheet', href : `/${ pagename }.css` },
+          { rel : 'stylesheet', href : `/entry-client.css`}
         ]
       }),
       body : mergeAndConcat(body, {
         script : [
-          { src : `/src/front/common.js` },
-          { src : `/src/front/${ pagename }.js` },
-          { src : '/src/entry-client.js' }
+          { src : `/front/common.js` },
+          { src : `/front/${ pagename }.js` },
+          { src : '/entry-client.js' }
         ]
       })
     }
@@ -73,7 +73,9 @@ module.exports = function (config) {
 
     const page = require(`../dist/back/${ pagename }.js`)
     var redirectPath = ''
-    const { app, router } = createApp(page, req, res, state => cacheBag = state, path => redirectPath = path)
+    const { app, router } = createApp(page, req, res,
+      state => Object.assign(cacheBag, state), // setCacheBag
+      path => redirectPath = path) // redirect
 
     // set server-side router's location
     router.push(req.url)

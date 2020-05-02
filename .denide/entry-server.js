@@ -67,6 +67,9 @@ export default function createApp(page, req = {}, res = {}, setCacheBag, redirec
     }
   {{/plugins.server}}
 
+  // if there is plugin edite store state
+  setCacheBag(store.state)
+
   function redirect (path) {
     if ( typeof window == 'object' ) {
       const url = new URL( window.location )

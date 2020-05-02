@@ -67,7 +67,6 @@ function redirect (path) {
 
 router.beforeEach((to, from, next) => {
   middlewares.forEach( middleware => middleware({ ...app.context, redirect }) )
-  next()
 })
 
 const App = new Vue(app)
