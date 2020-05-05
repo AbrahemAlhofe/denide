@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import ClientOnly from 'vue-client-only'
 import layout from '../layouts/default.vue';
 import { createRouter } from './router';
 import { createStore } from './store';
@@ -12,6 +13,8 @@ export default function createApp(page, req = {}, res = {}, setCacheBag, redirec
   {{#middlewares}}
   middlewares.push( require('{{{ path }}}') )
   {{/middlewares}}
+
+  Vue.component('client-only', ClientOnly)
 
   const app = {
     store,

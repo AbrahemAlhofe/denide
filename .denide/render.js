@@ -21,7 +21,7 @@ app.use( cookieParser() )
 app.use(compression())
 
 module.exports = function (config) {
-  const { routes, head, body } = config
+  var { routes, head, body } = config
 
   app.use(config.serverMiddleware.path, require(
     path.resolve(rootPath, config.serverMiddleware.handler)
@@ -46,6 +46,21 @@ module.exports = function (config) {
   })
 
   const middleware = pagename => (req, res, next) => {
+    const ssr = Renderer({
+      template (result, context) {
+        const { document } = new JSDOM(result).window
+        const { head, body } = context
+        return `<html> ${ json2html({ head, body }, document).documentElement.innerHTML } </html>`
+      }
+    })
+
+    const page = require(`../dist/back/${ pagename }.js`)
+
+    if ( page.html ) {
+      head = mergeAndConcat(head, page.html.head || {})
+      body = mergeAndConcat(body, page.html.body || {})
+    }
+
     const context = {
       head : mergeAndConcat(head, {
         link : [
@@ -62,17 +77,8 @@ module.exports = function (config) {
       })
     }
 
-    const ssr = Renderer({
-      template (result, context) {
-        const { document } = new JSDOM(result).window
-        const { head, body } = context
-        return `<html> ${ json2html({ head, body }, document).documentElement.innerHTML } </html>`
-      }
-    })
-
-
-    const page = require(`../dist/back/${ pagename }.js`)
     var redirectPath = ''
+
     const { app, router } = createApp(page, req, res,
       state => Object.assign(cacheBag, state), // setCacheBag
       path => redirectPath = path) // redirect
