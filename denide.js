@@ -15,6 +15,9 @@ class Denide {
       link : [],
       routes : {},
       script : [],
+      sassLoader : {
+        globalFile : ""
+      },
       routerMiddlewares : [],
       serverMiddleware : {},
       port : 3000
@@ -50,7 +53,7 @@ class Denide {
 
   bundler () {
       global.isFirstTime = true
-      return Promise.all( getCompilers( require('./webpack.config'), global.isFirstTime ) ).then((stats) => {
+      return Promise.all( getCompilers( require('./webpack.config')(this.config), global.isFirstTime ) ).then((stats) => {
           global.isFirstTime = false
           this.render = require( path.resolve( process.cwd(), './.denide/render') )( this.config )
           return stats
