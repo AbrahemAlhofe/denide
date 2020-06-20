@@ -8,6 +8,7 @@ NProgress.configure({ showSpinner: false });
 Vue.use(Router)
 
 const view = (to, pagename, page) => resolve => {
+
   // if we are on server side pass page what pass from server to router
   if ( typeof window !== 'object' ) {
     return resolve(page)
@@ -39,7 +40,6 @@ const view = (to, pagename, page) => resolve => {
     })
   }
 
-  console.log('client side only !')
   NProgress.start();
   fetch(`/page/${ pagename }`).then(res => res.json()).then(initPage)
 }

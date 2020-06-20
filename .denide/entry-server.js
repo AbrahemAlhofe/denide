@@ -8,6 +8,7 @@ import mixin from'./mixin.js'
 Vue.mixin(mixin)
 
 export default function createApp(page, req = {}, res = {}, redirectServer) {
+
   const router = createRouter(page);
   const store = createStore();
   const middlewares = []

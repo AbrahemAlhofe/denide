@@ -2,8 +2,8 @@ import Vue from 'vue';
 import layout from '../layouts/default.vue';
 import { createRouter } from './router';
 import { createStore } from './store';
-import mixin from './mixin.js'
 import 'nprogress/nprogress.css'
+import mixin from './mixin.js'
 
 Vue.mixin(mixin)
 
