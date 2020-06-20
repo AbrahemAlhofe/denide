@@ -8,15 +8,6 @@ if ( typeof window === "object" ) store = { ...store, state : JSON.parse('{{{ va
 
 Vue.use( Vuex )
 
-export function createStore (setCacheBag) {
-
-  if ( typeof window !== 'object') setCacheBag( store.state() )
-
-  store.plugins.push(function (store) {
-    store.subscribe(function (mutation, state) {
-      if ( typeof window !== 'object' ) setCacheBag( state )
-    })
-  })
-
+export function createStore () {
   return new Vuex.Store( store )
 }

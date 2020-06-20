@@ -1,4 +1,3 @@
-import Vue from 'vue';
 const mixin = {}
 
 mixin.serverPrefetch = async function () {
@@ -22,8 +21,4 @@ mixin.created = async function () {
 }
 
 // Register Plugin
-Vue.use({
-  install (vue, options) {
-    vue.mixin(mixin)
-  }
-})
+module.export = mixin

@@ -14,7 +14,6 @@ const compression = require('compression')
 const createApp = require('../dist/back/entry-server.js').default
 
 const rootPath = path.resolve(process.cwd())
-var cacheBag = {}
 
 app.use( cookieParser() )
 
@@ -79,8 +78,7 @@ module.exports = function (config) {
 
     var redirectPath = ''
 
-    const { app, router } = createApp(page, req, res,
-      state => Object.assign(cacheBag, state), // setCacheBag
+    const { app, router } = createApp(page, req, res, 
       path => redirectPath = path) // redirect
 
     // set server-side router's location
@@ -99,7 +97,7 @@ module.exports = function (config) {
         if ( redirectPath ) return res.redirect( redirectPath )
 
         const file = fs.readFileSync( path.join(rootPath, '/dist/front/entry-client.js') )
-        const content = mustache.render(file.toString(), { value : JSON.stringify(cacheBag).replace(/"/g, '\\"') })
+        const content = mustache.render(file.toString(), { value : JSON.stringify(app.$store.state).replace(/"/g, '\\"') })
         fs.writeFileSync( path.join( rootPath, '/dist/entry-client.js' ), content )
 
         res.send(html)

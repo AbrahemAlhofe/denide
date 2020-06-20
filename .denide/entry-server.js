@@ -3,11 +3,13 @@ import ClientOnly from 'vue-client-only'
 import layout from '../layouts/default.vue';
 import { createRouter } from './router';
 import { createStore } from './store';
-import './mixin.js'
+import mixin from'./mixin.js'
 
-export default function createApp(page, req = {}, res = {}, setCacheBag, redirectServer) {
+Vue.mixin(mixin)
+
+export default function createApp(page, req = {}, res = {}, redirectServer) {
   const router = createRouter(page);
-  const store = createStore(setCacheBag);
+  const store = createStore();
   const middlewares = []
 
   {{#middlewares}}
@@ -69,9 +71,6 @@ export default function createApp(page, req = {}, res = {}, setCacheBag, redirec
       plugin{{ index }}.default(app.context, inject)
     }
   {{/plugins.server}}
-
-  // if there is plugin edite store state
-  setCacheBag(store.state)
 
   function redirect (path) {
     if ( typeof window == 'object' ) {
