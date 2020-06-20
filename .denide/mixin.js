@@ -21,4 +21,4 @@ mixin.created = async function () {
 }
 
 // Register Plugin
-module.export = mixin
+module.exports = mixin
