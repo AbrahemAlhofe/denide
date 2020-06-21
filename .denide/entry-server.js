@@ -8,8 +8,8 @@ import mixin from'./mixin.js'
 Vue.mixin(mixin)
 
 export default function createApp(page, req = {}, res = {}, redirectServer) {
-
-  const router = createRouter(page);
+  const context = {}
+  const router = createRouter(page, context);
   const store = createStore();
   const middlewares = []
 
@@ -36,7 +36,7 @@ export default function createApp(page, req = {}, res = {}, redirectServer) {
     route = app.router.resolve( new URL( window.location ).pathname ).route
   }
 
-  app.context = {
+  Object.assign(context, {
     store,
     router,
     route,
@@ -44,7 +44,9 @@ export default function createApp(page, req = {}, res = {}, redirectServer) {
     app,
     req,
     res
-  }
+  })
+
+  app.context = context
 
   app.store.$router = app.router
 
@@ -54,6 +56,7 @@ export default function createApp(page, req = {}, res = {}, redirectServer) {
     key = '$' + key
     app[key] = value
     Vue.use({ install(vm) { vm.prototype[key] = value } })
+    app.context[key] = value
     app.store[key] = value
   }
 
@@ -88,5 +91,5 @@ export default function createApp(page, req = {}, res = {}, redirectServer) {
     next()
   })
 
-  return { app : new Vue(app), router };
+  return { app : new Vue(app), router }
 }

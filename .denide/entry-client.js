@@ -7,7 +7,8 @@ import mixin from './mixin.js'
 
 Vue.mixin(mixin)
 
-const router = createRouter();
+const context = {}
+const router = createRouter(undefined, context);
 const store = createStore();
 const middlewares = []
 
@@ -26,13 +27,15 @@ const app = {
 
 let route = app.router.resolve( new URL( window.location ).pathname ).route
 
-app.context = {
+Object.assign(context, {
   store,
   router,
   route,
   middlewares,
   app
-}
+})
+
+app.context = context
 
 app.store.$router = app.router
 
@@ -42,6 +45,7 @@ function inject (key, value) {
   key = '$' + key
   Vue.use({ install (vm) { vm.prototype[key] = value } })
   app[key] = value
+  context[key] = value 
   app.store[key] = value
 }
 

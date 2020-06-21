@@ -7,23 +7,30 @@ NProgress.configure({ showSpinner: false });
 
 Vue.use(Router)
 
-const view = (to, pagename, page) => resolve => {
+const view = (to, pagename, page, context) => resolve => {
+
+  function sendPage (page) {
+
+    if ( page.asyncData ) {
+      page.asyncData.call(context).then(data => {
+        page.mixins = [ { data () { return data } } ]
+        resolve(page)
+      })
+    } else resolve(page)
+
+  }
 
   // if we are on server side pass page what pass from server to router
-  if ( typeof window !== 'object' ) {
-    return resolve(page)
-  }
+  if ( typeof window !== 'object' ) return sendPage(page)
 
   // get page from pages
   const pageCached = window.$__denide__pages[ pagename ]
 
   // if page loaded before pass it to router
-  if ( pageCached ) { resolve(pageCached); return }
+  if ( pageCached ) return sendPage(pageCached); 
 
   // on page load send it to router
-  window.$__denide__onPageLoad = (page) => {
-    resolve(page)
-  }
+  window.$__denide__onPageLoad = (page) => sendPage(page)
 
   function initPage ({ assets }) {
     NProgress.done();
@@ -44,7 +51,7 @@ const view = (to, pagename, page) => resolve => {
   fetch(`/page/${ pagename }`).then(res => res.json()).then(initPage)
 }
 
-export function createRouter (page) {
+export function createRouter (page, context) {
   return new Router({
     mode: 'history',
     routes: [
@@ -52,7 +59,7 @@ export function createRouter (page) {
         {
           path : '{{{ path }}}',
           name : '{{ pagename }}',
-          component : view('{{{ path }}}', '{{ pagename }}', page)
+          component : view('{{{ path }}}', '{{ pagename }}', page, context)
         },
       {{/routes}}
     ]

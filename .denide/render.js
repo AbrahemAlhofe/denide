@@ -78,8 +78,12 @@ module.exports = function (config) {
 
     var redirectPath = ''
 
-    const { app, router } = createApp(page, req, res, 
-      path => redirectPath = path) // redirect
+    const { app, router } = createApp(
+      page,
+      req,
+      res, 
+      path => redirectPath = path
+    )
 
     // set server-side router's location
     router.push(req.url)
