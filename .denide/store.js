@@ -4,7 +4,7 @@ var store = require('../store/index')
 
 store = Object.assign(store, { plugins : [] })
 
-if ( typeof window === "object" ) store = { ...store, state : JSON.parse('{{{ value }}}') }
+if ( typeof window === "object" ) store = { ...store, state : window.$__denide__cacheBag }
 
 Vue.use( Vuex )
 

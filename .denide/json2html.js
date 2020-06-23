@@ -3,10 +3,16 @@ var $createElement = (document) => function (tagname, attributes, options) {
   options = Object.assign({
     innerHTML : element.innerHTML
   }, options)
+
+  delete attributes.innerHTML
+
   for( let attribute in attributes ) {
-    element.setAttribute( attribute, attributes[attribute] )
+    const value = attributes[attribute]
+    element.setAttribute( attribute, value )
   }
+
   element.innerHTML = options.innerHTML
+  
   return element
 }
 
@@ -37,7 +43,7 @@ module.exports = function (json, document, middlewares={}) {
 
         for ( let attributes of elements[tagname] ) {
           attributes = ( middlewares[tagname] ) ? middlewares[tagname](attributes) : attributes
-          middlewares.push(document[block], createElement(tagname, attributes))
+          middlewares.push(document[block], createElement(tagname, attributes, attributes))
         }
 
       } else {

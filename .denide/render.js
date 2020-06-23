@@ -45,14 +45,6 @@ module.exports = function (config) {
   })
 
   const middleware = pagename => (req, res, next) => {
-    const ssr = Renderer({
-      template (result, context) {
-        const { document } = new JSDOM(result).window
-        const { head, body } = context
-        return `<html> ${ json2html({ head, body }, document).documentElement.innerHTML } </html>`
-      }
-    })
-
     const page = require(`../dist/back/${ pagename }.js`)
 
     if ( page.html ) {
@@ -71,7 +63,7 @@ module.exports = function (config) {
         script : [
           { src : `/front/common.js` },
           { src : `/front/${ pagename }.js` },
-          { src : '/entry-client.js' }
+          { src : '/front/entry-client.js' }
         ]
       })
     }
@@ -85,6 +77,19 @@ module.exports = function (config) {
       path => redirectPath = path
     )
 
+    const ssr = Renderer({
+      template (result, context) {
+        const { document } = new JSDOM(result).window
+        const { head, body } = context
+        
+        if ( !head.script ) head.script = []
+
+        head.script.push({ innerHTML : `window.$__denide__cacheBag = ${JSON.stringify(app.$store.state)}` })
+
+        return `<html> ${ json2html({ head, body }, document).documentElement.innerHTML } </html>`
+      }
+    })
+
     // set server-side router's location
     router.push(req.url)
 
@@ -96,14 +101,9 @@ module.exports = function (config) {
         next()
       }
 
-      ssr.renderToString( app, mergeAndConcat(page.html, context), (err, html) => {
+      ssr.renderToString( app, context, (err, html) => {
         if (err) console.log( err )
         if ( redirectPath ) return res.redirect( redirectPath )
-
-        const file = fs.readFileSync( path.join(rootPath, '/dist/front/entry-client.js') )
-        const content = mustache.render(file.toString(), { value : JSON.stringify(app.$store.state).replace(/"/g, '\\"') })
-        fs.writeFileSync( path.join( rootPath, '/dist/entry-client.js' ), content )
-
         res.send(html)
       })
     }, err => console.log(`Router [warn] : ${err}`))
