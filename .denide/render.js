@@ -81,7 +81,7 @@ module.exports = function (config) {
       template (result, context) {
         const { document } = new JSDOM(result).window
         const { head, body } = context
-        
+
         if ( !head.script ) head.script = []
 
         head.script.push({ innerHTML : `window.$__denide__cacheBag = ${JSON.stringify(app.$store.state)}` })

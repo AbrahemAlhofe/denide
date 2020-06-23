@@ -1,14 +1,16 @@
+import { mergeAndConcat } from 'merge-anything';
+import json2html from './json2html';
+
 const mixin = {};
 
 mixin.created = function() {
   // Head Management
   if (typeof this.$options.head !== "function") return;
   const head = this.$options.head.call(this) || {};
-
+  
   if (typeof window !== "object") {
-    this.$ssrContext.head = Object.assign(head, this.$ssrContext.head);
-  } else document.title = head.title;
+    this.$ssrContext.head = mergeAndConcat(head, this.$ssrContext.head)
+  } else json2html({ head }, document)
 };
 
-// Register Plugin
-module.exports = mixin;
+export default mixin
