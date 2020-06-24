@@ -15,72 +15,72 @@ const { mergeAndConcat } = require('merge-anything')
 
 const isProduction = process.env.NODE_ENV === 'production'
 
-const Rules = [
-  {
-    test: /\.ya?ml$/,
-    type: "json", // Required by Webpack v4
-    use: "yaml-loader",
-  },
-
-  {
-    test: /\.pug$/,
-    loader: "pug-plain-loader",
-  },
-  
-  {
-    test: /\.scss$/,
-    use: [
-      MiniCssExtractPlugin.loader,
-      "css-loader",
-      {
-        loader: "sass-loader",
-        options: {
-          prependData: `@import "${config.sassLoader.globalFile}"; `,
-        },
-      },
-    ],
-  },
-  
-  {
-    test: /\.vue/i,
-    loader: "vue-loader",
-    options: {
-      extractCSS: isProduction,
-    },
-  },
-  
-  {
-    test: /\.html$/i,
-    loader: "html-loader",
-  },
-  
-  {
-    test: /\.css$/i,
-    use: [
-      !isProduction ? "vue-style-loader" : MiniCssExtractPlugin.loader,
-      "css-loader",
-    ],
-  },
-  
-  {
-    test: /\.svg/i,
-    use: "raw-loader",
-  },
-  
-  {
-    test: /\.(png|jpe?g|gif)$/i,
-    use: [
-      {
-        loader: "url-loader",
-        options: {
-          limit: 8192,
-        },
-      },
-    ],
-  }
-
-];
 module.exports = function getBundlersConfig (config) {
+  const Rules = [
+    {
+      test: /\.ya?ml$/,
+      type: "json", // Required by Webpack v4
+      use: "yaml-loader",
+    },
+
+    {
+      test: /\.pug$/,
+      loader: "pug-plain-loader",
+    },
+
+    {
+      test: /\.scss$/,
+      use: [
+        MiniCssExtractPlugin.loader,
+        "css-loader",
+        {
+          loader: "sass-loader",
+          options: {
+            prependData: `@import "${config.sassLoader.globalFile}"; `,
+          },
+        },
+      ],
+    },
+
+    {
+      test: /\.vue/i,
+      loader: "vue-loader",
+      options: {
+        extractCSS: isProduction,
+      },
+    },
+
+    {
+      test: /\.html$/i,
+      loader: "html-loader",
+    },
+
+    {
+      test: /\.css$/i,
+      use: [
+        !isProduction ? "vue-style-loader" : MiniCssExtractPlugin.loader,
+        "css-loader",
+      ],
+    },
+
+    {
+      test: /\.svg/i,
+      use: "raw-loader",
+    },
+
+    {
+      test: /\.(png|jpe?g|gif)$/i,
+      use: [
+        {
+          loader: "url-loader",
+          options: {
+            limit: 8192,
+          },
+        },
+      ],
+    },
+  ];
+
   const options = {
     mode: isProduction ? "production" : "development",
     entry: entries,
