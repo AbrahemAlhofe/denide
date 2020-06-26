@@ -17,6 +17,18 @@ const isProduction = process.env.NODE_ENV === 'production'
 
 module.exports = function getBundlersConfig (config) {
   const Rules = [
+    
+    {
+      test: /\.m?js$/,
+      exclude: /(node_modules|bower_components)/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env']
+        }
+      }
+    },
+
     {
       test: /\.ya?ml$/,
       type: "json", // Required by Webpack v4

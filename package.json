@@ -22,8 +22,8 @@
     "denide": "./bin/cli.js"
   },
   "dependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.0",
+    "@babel/core": "^7.10.3",
+    "@babel/preset-env": "^7.10.3",
     "babel-loader": "^8.1.0",
     "commander": "^5.0.0",
     "compression": "^1.7.4",
