@@ -10,7 +10,6 @@ Vue.use(Router)
 const view = (to, pagename, page, context) => resolve => {
 
   function sendPage (page) {
-
     if ( page.asyncData ) {
       page.asyncData.call(context).then(data => {
         page.mixins = [ { data () { return data } } ]
@@ -21,7 +20,7 @@ const view = (to, pagename, page, context) => resolve => {
   }
 
   // if we are on server side pass page what pass from server to router
-  if ( typeof window !== 'object' ) return sendPage(page)
+  if ( typeof window !== 'object' ) return sendPage(page.default)
 
   // get page from pages
   const pageCached = window.$__denide__pages[ pagename ]

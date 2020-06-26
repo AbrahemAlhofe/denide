@@ -14,7 +14,7 @@ export default function createApp(page, req = {}, res = {}, redirectServer) {
   const middlewares = []
 
   {{#middlewares}}
-  middlewares.push( require('{{{ path }}}') )
+  middlewares.push( require('{{{ path }}}').default )
   {{/middlewares}}
 
   Vue.component('client-only', ClientOnly)

@@ -12,8 +12,9 @@ const router = createRouter(undefined, context);
 const store = createStore();
 const middlewares = []
 
+
 {{#middlewares}}
-middlewares.push( require('{{{ path }}}') )
+middlewares.push( require('{{{ path }}}').default )
 {{/middlewares}}
 
 const app = {

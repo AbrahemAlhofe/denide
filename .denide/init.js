@@ -1,4 +1,4 @@
-module.exports = (page, pagename) => {
+export default (page, pagename) => {
   // if we are not in browser enviroment cancel everything
   if ( typeof window !== 'object' ) return page
 
