@@ -7,7 +7,7 @@ import mixin from'./mixin.js'
 
 Vue.mixin(mixin)
 
-export default function createApp(page, req = {}, res = {}, redirectServer) {
+export default function createApp(page, req = {}, res = {}, redirect) {
   const context = {}
   const router = createRouter(page, context);
   const store = createStore();
@@ -42,6 +42,7 @@ export default function createApp(page, req = {}, res = {}, redirectServer) {
     route,
     middlewares,
     app,
+    redirect,
     req,
     res
   })
@@ -75,16 +76,6 @@ export default function createApp(page, req = {}, res = {}, redirectServer) {
       plugin{{ index }}.default(app.context, inject)
     }
   {{/plugins.server}}
-
-  function redirect (path) {
-    if ( typeof window == 'object' ) {
-      const url = new URL( window.location )
-      url.pathname = path
-      window.location = url.href
-    } else {
-      redirectServer(path)
-    }
-  }
 
   router.beforeEach((to, from, next) => {
     middlewares.forEach( middleware => middleware({ ...app.context, redirect }) )

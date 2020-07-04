@@ -44,7 +44,7 @@ module.exports = function (config) {
     res.send({ assets })
   })
 
-  const middleware = pagename => (req, res, next) => {
+  const middleware = (pagename, pathname) => (req, res, next) => {
     const page = require(`../dist/back/${ pagename }.js`)
 
     if ( page.html ) {
@@ -97,9 +97,11 @@ module.exports = function (config) {
     router.onReady(() => {
       const matchedComponents = router.getMatchedComponents()
       // no matched routes, reject with 404
-      if (!matchedComponents.length) {
-        next()
+      if ( !matchedComponents.length || pathname === '*' ) {
+        res.status(404)
       }
+      else res.status(200)
+
 
       ssr.renderToString( app, context, (err, html) => {
         if (err) console.log( err )
@@ -110,7 +112,7 @@ module.exports = function (config) {
   }
 
   {{#routes}}
-  app.get('{{{ path }}}', middleware('{{ pagename }}') )
+  app.get('{{{ path }}}', middleware('{{ pagename }}', '{{{ path }}}') )
   {{/routes}}
 
   return app
