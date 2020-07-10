@@ -73,6 +73,7 @@ function redirect (path) {
 }
 
 router.beforeEach((to, from, next) => {
+  app.context.route = to
   middlewares.forEach( middleware => middleware({ ...app.context, redirect }) )
   next(vm => {
     console.log( vm.$i18n )
