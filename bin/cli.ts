@@ -22,8 +22,10 @@ function createPackageFile(path: string): Promise<any> {
     npm.on('close', () => {
       const file = JSON.parse( fs.readFileSync(`${path}/package.json`).toString() )
       file.scripts = {
-        "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server"
-      }
+        dev: "cross-env NODE_ENV=development nodemon server/index.js --watch server",
+        prod: "cross-env NODE_ENV=production node server/index.js",
+        build: "denide build"
+      };
       fs.writeFileSync(`${path}/package.json`, JSON.stringify(file, null, 1), 'utf8')
       resolve()
     })
@@ -133,6 +135,8 @@ async function buildProject () {
   } = require('../denide')
 
   const denide = new Denide(config)
+
+  consola.info("Start Building . . .");
 
   await denide.bundle()
 

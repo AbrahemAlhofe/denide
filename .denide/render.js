@@ -1,25 +1,25 @@
-const path = require('path');
-const cookieParser = require('cookie-parser')
-const express = require('express');
-const mustache = require('mustache');
-const app = express.Router();
-
-const fs = require('fs')
-const json2html = require('./json2html')
-const { JSDOM } = require('jsdom')
-const { mergeAndConcat } = require('merge-anything')
-const Renderer = require('vue-server-renderer').createRenderer
-const compression = require('compression')
-
-const createApp = require('../dist/back/entry-server.js').default
-
-const rootPath = path.resolve(process.cwd())
-
-app.use( cookieParser() )
-
-app.use(compression())
-
 module.exports = function (config) {
+  const path = require('path');
+  const cookieParser = require('cookie-parser')
+  const express = require('express');
+  const mustache = require('mustache');
+  const app = express.Router();
+
+  const fs = require('fs')
+  const json2html = require('./json2html')
+  const { JSDOM } = require('jsdom')
+  const { mergeAndConcat } = require('merge-anything')
+  const Renderer = require('vue-server-renderer').createRenderer
+  const compression = require('compression')
+
+  const createApp = require('../dist/back/entry-server.js').default
+
+  const rootPath = path.resolve(process.cwd())
+
+  app.use( cookieParser() )
+
+  app.use(compression())
+  
   var { routes, head, body } = config
 
   app.use(config.serverMiddleware.path, require(
