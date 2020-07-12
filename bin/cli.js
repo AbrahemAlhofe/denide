@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -150,9 +149,21 @@ function createProject(project_name) {
         });
     });
 }
-// commandy for create new project
+function buildProject() {
+    var config = require(path.resolve(process.cwd(), "./denide.config")) || {};
+    config.isProd = true;
+    var Denide = require('./denide');
+    var denide = new Denide(config);
+    denide.bundle();
+}
+// command for create new project
 program
     .command('create <project_name>')
     .description('create a new project')
     .action(createProject);
+// command for create new project
+program
+    .command('build')
+    .description('build a project')
+    .action(buildProject);
 program.parse(process.argv);

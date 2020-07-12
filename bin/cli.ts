@@ -109,10 +109,45 @@ async function createProject (project_name: string) {
   })
 }
 
-// commandy for create new project
+function buildProject () {
+
+  const config: {
+    isProd?: boolean;
+    link?: [];
+    routes?: { [key: string]: string };
+    script?: [];
+    sassLoader?: {
+      globalFile?: string;
+    };
+    routerMiddlewares?: [];
+    serverMiddleware?: { [key: string]: string };
+    port?: number;
+  } = require(path.resolve(process.cwd(), "./denide.config")) || {}
+  
+  config.isProd = true
+
+  const Denide: {
+    new (config): {
+      bundle (): void
+    }
+  } = require('./denide')
+
+  const denide = new Denide(config)
+
+  denide.bundle()
+  
+}
+
+// command for create new project
 program
   .command('create <project_name>')
   .description('create a new project')
   .action(createProject)
+
+// command for create new project
+program
+  .command('build')
+  .description('build a project')
+  .action(buildProject)
 
 program.parse(process.argv)

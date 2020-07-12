@@ -49,6 +49,7 @@ class Denide {
       }
     })
 
+    this.render = require( path.resolve( process.cwd(), './.denide/render') )( this.config )
   }
 
   bundler () {
