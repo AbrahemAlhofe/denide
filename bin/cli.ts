@@ -109,7 +109,7 @@ async function createProject (project_name: string) {
   })
 }
 
-function buildProject () {
+async function buildProject () {
 
   const config: {
     isProd?: boolean;
@@ -128,14 +128,19 @@ function buildProject () {
 
   const Denide: {
     new (config): {
-      bundle (): void
+      bundle (): Promise<any>
     }
-  } = require('./denide')
+  } = require('../denide')
 
   const denide = new Denide(config)
 
-  denide.bundle()
-  
+  await denide.bundle()
+
+  consola.success({
+    message : 'Building Succeeded',
+    badge : true
+  })
+
 }
 
 // command for create new project

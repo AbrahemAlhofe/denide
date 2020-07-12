@@ -14,8 +14,6 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
 
 const { mergeAndConcat } = require("merge-anything");
 
-const isProduction = process.env.NODE_ENV === "production";
-
 module.exports = function getBundlersConfig(config) {
   const Rules = [
     {
@@ -59,7 +57,7 @@ module.exports = function getBundlersConfig(config) {
       test: /\.vue/i,
       loader: "vue-loader",
       options: {
-        extractCSS: isProduction,
+        extractCSS: config.isProd,
       },
     },
 
@@ -71,7 +69,7 @@ module.exports = function getBundlersConfig(config) {
     {
       test: /\.css$/i,
       use: [
-        !isProduction ? "vue-style-loader" : MiniCssExtractPlugin.loader,
+        !config.isProd ? "vue-style-loader" : MiniCssExtractPlugin.loader,
         "css-loader",
       ],
     },
@@ -95,7 +93,7 @@ module.exports = function getBundlersConfig(config) {
   ];
 
   const options = {
-    mode: isProduction ? "production" : "development",
+    mode: config.isProd ? "production" : "development",
     entry: entries,
     module: {
       rules: Rules,

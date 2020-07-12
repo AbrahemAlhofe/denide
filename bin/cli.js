@@ -150,11 +150,26 @@ function createProject(project_name) {
     });
 }
 function buildProject() {
-    var config = require(path.resolve(process.cwd(), "./denide.config")) || {};
-    config.isProd = true;
-    var Denide = require('./denide');
-    var denide = new Denide(config);
-    denide.bundle();
+    return __awaiter(this, void 0, void 0, function () {
+        var config, Denide, denide;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    config = require(path.resolve(process.cwd(), "./denide.config")) || {};
+                    config.isProd = true;
+                    Denide = require('../denide');
+                    denide = new Denide(config);
+                    return [4 /*yield*/, denide.bundle()];
+                case 1:
+                    _a.sent();
+                    consola.success({
+                        message: 'Building Succeeded',
+                        badge: true
+                    });
+                    return [2 /*return*/];
+            }
+        });
+    });
 }
 // command for create new project
 program
