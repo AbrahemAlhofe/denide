@@ -70,26 +70,47 @@ module.exports.getCompilers = ( configs, isFirstTime ) => {
     const compilers = []
 
     configs.forEach(config => {
-        const compiler = webpack( config )
-        const step = (resolve) => {
-            // build and watch entries files
-            compiler.watch({}, (error, stats) => {
-              // if is there error stop process
-              if ( error || stats.hasErrors() ) {
-                process.stdout.write(stats.toString() + '\n');
-              }
 
-              // if it is not first time file run
-              if ( !isFirstTime ) {
-                console.log('Reload Server ...')
-                this.reloadServer()
-              }
+        const compiler = webpack( config )
+
+        const step = (resolve) => {
+            
+          if ( config.mode === 'production' ) {
+
+            // build entries files
+            compiler.run((error, stats) => {
+              
+              // if is there error stop process
+              if ( error || stats.hasErrors() )
+              process.stdout.write(stats.toString() + '\n');
 
               resolve(stats)
+            
             });
+
+            return 
+          }
+
+          // build and watch entries files
+          compiler.watch({}, (error, stats) => {
+            // if is there error stop process
+            if ( error || stats.hasErrors() ) {
+              process.stdout.write(stats.toString() + '\n');
+            }
+
+            // if it is not first time file run
+            if ( !isFirstTime ) {
+              console.log('Reload Server ...')
+              this.reloadServer()
+            }
+
+            resolve(stats)
+          });
+
         }
 
         compilers.push( new Promise(step) )
+    
     })
 
     return compilers
