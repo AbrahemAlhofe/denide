@@ -1,6 +1,6 @@
 {
   "name": "denide",
-  "version": "3.4.6",
+  "version": "3.5.0",
   "description": "Denide is server side framework for vue js to load pages page by page when user need it",
   "main": "denide.js",
   "repository": "https://github.com/AbrahemAlhofe/denide.git",
